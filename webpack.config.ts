@@ -3,7 +3,7 @@ import path from "path";
 import CopyPlugin from "copy-webpack-plugin";
 
 const config: webpack.Configuration = {
-  mode: "development",
+  mode: process.env.NODE_ENV === "development" ? "development" : "production",
   devtool: "inline-source-map",
   entry: {
     content: path.resolve("/src/content.ts"),
