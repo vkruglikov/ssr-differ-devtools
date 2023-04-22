@@ -1,0 +1,36 @@
+{
+  "name": "react-hydrate-devtools",
+  "version": "0.0.1",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vkruglikov/react-hydrate-debugger.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vkruglikov/react-hydrate-debugger/issues"
+  },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  },
+  "homepage": "https://github.com/vkruglikov/react-hydrate-debugger#readme",
+  "devDependencies": {
+    "@types/chrome": "^0.0.233",
+    "@types/node": "^18.15.13",
+    "@types/webpack": "^5.28.1",
+    "copy-webpack-plugin": "^11.0.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.1",
+    "prettier": "2.8.7",
+    "ts-loader": "^9.4.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.4",
+    "webpack": "^5.80.0",
+    "webpack-cli": "^5.0.2"
+  }
+}
