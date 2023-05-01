@@ -1,17 +1,14 @@
-class ReactHydrateDevTools {
-  constructor() {
-    const reactRootHTML = document.getElementById("root").outerHTML;
+import { ContentClientConnectionPort, EMessage, EPortName } from "./types";
 
-    console.log(reactRootHTML);
-  }
-}
+const port = chrome.runtime.connect({
+  name: EPortName.content,
+}) as ContentClientConnectionPort;
 
-declare global {
-  interface Window {
-    __REACT_HYDRATE_DEVTOOLS?: ReactHydrateDevTools;
-  }
-}
+port.onMessage.addListener((message) => {
+  const outerHTML = document.querySelector(message.payload)?.outerHTML || "";
 
-window.__REACT_HYDRATE_DEVTOOLS = new ReactHydrateDevTools();
-
-export {};
+  port.postMessage({
+    action: EMessage.findDomInContentResponse,
+    payload: outerHTML,
+  });
+});

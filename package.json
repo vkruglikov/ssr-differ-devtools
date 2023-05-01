@@ -17,21 +17,41 @@
     "url": "https://github.com/vkruglikov/react-hydrate-devtools/issues"
   },
   "lint-staged": {
-    "**/*": "prettier --write --ignore-unknown"
+    "**/*": "prettier --write --ignore-unknown",
+    "*.ts": "eslint",
+    "*.tsx": "eslint"
   },
   "homepage": "https://github.com/vkruglikov/react-hydrate-devtools#readme",
   "devDependencies": {
     "@types/chrome": "^0.0.233",
+    "@types/diff-match-patch": "^1.0.32",
     "@types/node": "^18.15.13",
+    "@types/react": "^18.0.38",
+    "@types/react-dom": "^18.0.11",
     "@types/webpack": "^5.28.1",
+    "@types/webpack-dev-server": "^4.7.2",
+    "@typescript-eslint/eslint-plugin": "^5.59.1",
+    "@typescript-eslint/parser": "^5.59.1",
     "copy-webpack-plugin": "^11.0.0",
+    "css-loader": "^6.7.3",
+    "eslint": "^8.39.0",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "husky": "^8.0.3",
     "lint-staged": "^13.2.1",
     "prettier": "2.8.7",
+    "sass": "^1.62.0",
+    "sass-loader": "^13.2.2",
+    "style-loader": "^3.3.2",
     "ts-loader": "^9.4.2",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.4",
     "webpack": "^5.80.0",
     "webpack-cli": "^5.0.2"
+  },
+  "dependencies": {
+    "diff-match-patch": "^1.0.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }

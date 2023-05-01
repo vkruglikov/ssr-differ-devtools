@@ -4,12 +4,10 @@
   "description": "Helps to find the difference between SSR and client in #reactRoot",
   "version": "0.0.1",
   "devtools_page": "devtools.html",
-  "background": ["background.js"],
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"],
-      "run_at": "document_end"
-    }
-  ]
+  "host_permissions": ["https://*/*"],
+  "permissions": ["activeTab", "tabs", "scripting"],
+  "action": {},
+  "background": {
+    "service_worker": "background.js"
+  }
 }

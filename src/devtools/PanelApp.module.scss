@@ -1,0 +1,17 @@
+.panel {
+  .panelToolbar {
+    display: flex;
+  }
+
+  .panelLeft {
+    flex: 1 100%;
+  }
+
+  .panelRight {
+    flex: 1 100%;
+  }
+
+  .panelContent {
+    padding: 10px;
+  }
+}
