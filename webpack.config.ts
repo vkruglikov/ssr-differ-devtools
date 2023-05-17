@@ -2,6 +2,7 @@ import { Configuration as WebpackConfiguration } from "webpack";
 import { Configuration as WebpackDevServerConfiguration } from "webpack-dev-server";
 import path from "path";
 import CopyPlugin from "copy-webpack-plugin";
+import TerserPlugin from "terser-webpack-plugin";
 
 const config: WebpackConfiguration & WebpackDevServerConfiguration = {
   mode: process.env.NODE_ENV === "development" ? "development" : "production",
@@ -39,6 +40,14 @@ const config: WebpackConfiguration & WebpackDevServerConfiguration = {
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
+  },
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        extractComments: false,
+      }),
+    ],
   },
   devServer: {
     static: {
