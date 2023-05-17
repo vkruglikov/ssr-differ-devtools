@@ -2,8 +2,10 @@ import Port = chrome.runtime.Port;
 import PortMessageEvent = chrome.runtime.PortMessageEvent;
 
 export enum EMessage {
+  init = "init",
   findDomInContent = "findDomInContent",
   findDomInContentResponse = "findDomInContentResponse",
+  tabStatus = "tabStatus",
 }
 export enum EPortName {
   devtoolsPanel = "devtoolsPanel",
@@ -23,10 +25,11 @@ export type FindDomInContentResponseMessage = Message<
   EMessage.findDomInContentResponse,
   string
 >;
-
-export type PostMessage =
-  | FindDomInContentMessage
-  | FindDomInContentResponseMessage;
+export type TabStatusMessage = Message<
+  EMessage.tabStatus,
+  "loading" | "complete" | "unloaded"
+>;
+export type InitMessage = Message<EMessage.init, number>;
 
 export type ConnectionPort<
   N extends EPortName = EPortName,
@@ -44,26 +47,26 @@ export type MessageCallback<T extends ConnectionPort> = Parameters<
   T["onMessage"]["addListener"]
 >[0];
 
-export type DevtoolsClientConnectionPort = ConnectionPort<
-  EPortName.devtoolsPanel,
-  FindDomInContentMessage,
-  FindDomInContentResponseMessage
->;
-
 export type DevtoolsBgConnectionPort = ConnectionPort<
   EPortName.devtoolsPanel,
-  FindDomInContentResponseMessage,
-  FindDomInContentMessage
->;
-
-export type ContentClientConnectionPort = ConnectionPort<
-  EPortName.content,
-  FindDomInContentResponseMessage,
-  FindDomInContentMessage
+  FindDomInContentResponseMessage | TabStatusMessage,
+  FindDomInContentMessage | InitMessage
 >;
 
 export type ContentBgConnectionPort = ConnectionPort<
   EPortName.content,
   FindDomInContentMessage,
   FindDomInContentResponseMessage
+>;
+
+export type DevtoolsClientConnectionPort = ConnectionPort<
+  EPortName.devtoolsPanel,
+  FindDomInContentMessage | InitMessage,
+  FindDomInContentResponseMessage | TabStatusMessage
+>;
+
+export type ContentClientConnectionPort = ConnectionPort<
+  EPortName.content,
+  FindDomInContentResponseMessage,
+  FindDomInContentMessage
 >;

@@ -1,27 +1,59 @@
 import {
   DevtoolsBgConnectionPort,
+  EMessage,
+  EPortName,
   FindDomInContentMessage,
+  InitMessage,
   MessageCallback,
 } from "../types";
 import ConnectController from "./ConnectController";
+import Tab = chrome.tabs.Tab;
 
 class DevtoolsConnectController<
   T extends DevtoolsBgConnectionPort = DevtoolsBgConnectionPort
 > extends ConnectController<T> {
-  constructor(...args: ConstructorParameters<typeof ConnectController<T>>) {
-    super(...args);
+  public tabId: number;
+  public tab: Tab;
 
-    chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
-      if (!tabs[0].id) return;
+  init: MessageCallback<T> = async (message: InitMessage) => {
+    this.tabId = message.payload;
+    this.bgCTX = this.tabsCTX[this.tabId] = this.tabsCTX[this.tabId] || {};
+    this.bgCTX[EPortName.devtoolsPanel] = this;
 
-      chrome.scripting.executeScript({
-        target: { tabId: tabs[0].id },
-        files: ["content.js"],
-      });
+    this.tab = await chrome.tabs.get(this.tabId);
+
+    this.injectContentScript();
+    chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+      if (
+        tabId === this.tab.id &&
+        (changeInfo.status === "loading" || changeInfo.status === "complete")
+      ) {
+        this.bgCTX.devtoolsPanel?.postMessage({
+          action: EMessage.tabStatus,
+          payload: changeInfo.status,
+        });
+
+        if (changeInfo.status === "complete") {
+          this.injectContentScript();
+        }
+      }
+    });
+  };
+
+  private injectContentScript() {
+    chrome.scripting.executeScript({
+      target: { tabId: this.tabId },
+      files: ["content.js"],
     });
   }
 
-  findDomInContent: MessageCallback<T> = (message: FindDomInContentMessage) => {
+  disconnect() {
+    this.bgCTX.devtoolsPanel = undefined;
+  }
+
+  findDomInContent: MessageCallback<T> = async (
+    message: FindDomInContentMessage
+  ) => {
     this.bgCTX?.content?.postMessage(message);
   };
 }

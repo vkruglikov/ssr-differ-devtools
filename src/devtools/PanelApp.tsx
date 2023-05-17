@@ -10,26 +10,45 @@ import DiffMatchPatch from "diff-match-patch";
 import styles from "./PanelApp.module.scss";
 import { useHAREntries } from "./hooks/useHAREntries";
 import { SelectHARRequest } from "./components/SelectHARRequest/SelectHARRequest";
-import { DevtoolsClientConnectionPort, EMessage } from "../types";
+import { DevtoolsClientConnectionPort, EMessage, EPortName } from "../types";
+import { usePort } from "./hooks/usePort";
 
 const dmp = new DiffMatchPatch.diff_match_patch();
 
-interface PanelAppProps {
-  port: DevtoolsClientConnectionPort;
-}
-const PanelApp: FC<PanelAppProps> = ({ port }) => {
+const PanelApp: FC = () => {
+  const port = usePort();
   const [selectedEntry, setSelectedEntry, entries] = useHAREntries();
+  const [contentReady, setContentReady] = useState(false);
 
   const [selector, setSelector] = useState("#root");
   const [serverRender, setServerRender] = useState("");
   const [clientRender, setClientRender] = useState("");
 
   useEffect(() => {
-    port?.onMessage.addListener((message) => {
+    if (!contentReady) {
+      setClientRender("");
+      setSelectedEntry(null);
+    }
+  }, [contentReady]);
+
+  useEffect(() => {
+    const handleMessage: Parameters<
+      DevtoolsClientConnectionPort["onMessage"]["addListener"]
+    >[0] = (message) => {
       if (message.action === EMessage.findDomInContentResponse) {
         setClientRender(message.payload || "");
+      } else if (message.action === EMessage.tabStatus) {
+        setContentReady(message.payload === "complete");
       }
+    };
+
+    port.onMessage.addListener(handleMessage);
+    port.postMessage({
+      action: EMessage.init,
+      payload: chrome.devtools.inspectedWindow.tabId,
     });
+
+    return () => port.onMessage.removeListener(handleMessage);
   }, [port]);
 
   const findDomInContent: ReactEventHandler<HTMLButtonElement> = () => {
@@ -50,7 +69,6 @@ const PanelApp: FC<PanelAppProps> = ({ port }) => {
       });
     } else {
       setServerRender("");
-      setClientRender("");
     }
   }, [selectedEntry, selector]);
 

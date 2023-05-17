@@ -1,11 +1,11 @@
 {
   "manifest_version": 3,
-  "name": "React Hydrate DevTools",
-  "description": "Helps to find the difference between SSR and client in #reactRoot",
+  "name": "SSR Differ DevTools",
+  "description": "Helps to find the difference between SSR and client rendered content",
   "version": "0.0.1",
   "devtools_page": "devtools.html",
-  "host_permissions": ["https://*/*"],
-  "permissions": ["activeTab", "tabs", "scripting"],
+  "host_permissions": ["*://*/*"],
+  "permissions": ["activeTab", "scripting"],
   "action": {},
   "background": {
     "service_worker": "background.js"

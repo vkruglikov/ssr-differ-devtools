@@ -1,1 +1,1 @@
-chrome.devtools.panels.create("Sample ", "", "panel.html");
+chrome.devtools.panels.create("SSR Differ", "", "panel.html");
